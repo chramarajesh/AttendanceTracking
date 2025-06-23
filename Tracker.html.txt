@@ -1,45 +1,3 @@
-# AttendanceTracking
-Code.gs
-function doGet() {
-  return HtmlService.createHtmlOutputFromFile("Tracker");
-}
-
-function logAttendance(data) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-
-  let address = data.location; // fallback
-
-  try {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${data.lat}&lon=${data.lng}`;
-    const response = UrlFetchApp.fetch(url, {
-      headers: { 'User-Agent': 'GoogleAppsScript' }
-    });
-    const json = JSON.parse(response.getContentText());
-    if (json && json.display_name) {
-      address = json.display_name;
-    }
-  } catch (err) {
-    Logger.log("Reverse geocoding failed: " + err.message);
-  }
-
-  try {
-   sheet.appendRow([
-      new Date(),
-      data.empid || '',
-      data.name || '',
-      data.email || '',
-      data.action || '',
-      address,
-      data.date || '',
-      data.time || ''
-    ]);
-  } catch (err) {
-    Logger.log("Sheet append failed: " + err.message);
-  }
-}
-=========================================
-Tracker.Html
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -297,5 +255,3 @@ Tracker.Html
   </script>
 </body>
 </html>
-
-
