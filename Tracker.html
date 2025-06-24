@@ -43,14 +43,34 @@
       box-sizing: border-box;
     }
 
+    input[type="radio"] {
+      width: auto;
+    }
+
     input[type="checkbox"] {
       width: auto;
       margin-right: 8px;
     }
 
+    .radio-group {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      margin-top: 10px;
+    }
+
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: normal;
+    }
+
     .checkbox-label {
       font-weight: normal;
-      margin-top: 12px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
     }
 
     button {
@@ -117,27 +137,20 @@
   <h2>Team Attendance Tracker</h2>
 
   <form id="attendanceForm" onsubmit="return false;">
-    <label for="empid">Employee ID:</label>
-    <input type="text" id="empid" required placeholder="Enter your employee ID" />
-
     <label for="name">Name:</label>
-    <input type="text" id="name" required placeholder="Enter your full name" />
+    <input list="nameList" id="name" name="name" placeholder="Choose your name" required />
+    <datalist id="nameList"></datalist>
+
+    <label for="empid">Employee ID:</label>
+    <input type="text" id="empid" name="empid" required readonly />
 
     <label for="email">Email ID:</label>
-    <input type="email" id="email" required placeholder="Enter your official email ID" />
+    <input type="email" id="email" name="email" required readonly />
 
-    <div style="margin-top: 16px;">
-      <label style="display: block; margin-bottom: 6px;">Action:</label>
-      <div style="display: flex; flex-wrap: nowrap; gap: 60px; align-items: center;">
-        <label for="login" style="display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-          <input type="radio" id="login" name="action" value="Log-In" required />
-          Log-In
-        </label>
-        <label for="logout" style="display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-          <input type="radio" id="logout" name="action" value="Log-Out" required />
-          Log-Out
-        </label>
-      </div>
+    <label style="margin-top: 20px;">Action:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="action" value="Log-In" required />Log-In</label>
+      <label><input type="radio" name="action" value="Log-Out" required />Log-Out</label>
     </div>
 
     <label class="checkbox-label">
@@ -155,21 +168,50 @@
     <h3>Privacy & User Login Policy</h3>
     <ul>
       <li>All users must access systems using their own authorized credentials.</li>
-      <li>Sharing, exchanging, or using another individual's login ID or email is strictly prohibited.</li>
-      <li>Any such activity is considered a serious security breach and may result in disciplinary action or legal consequences.</li>
-      <li>Users are responsible for safeguarding their login information and must report any suspicious behavior immediately.</li>
-      <li>Adherence to this policy is mandatory for all users to ensure data security and organizational integrity.</li>
+      <li>Sharing or using another individual's login is strictly prohibited.</li>
+      <li>Such activity may lead to disciplinary or legal action.</li>
+      <li>Report any suspicious behavior immediately.</li>
+      <li>This policy ensures data security and organizational integrity.</li>
     </ul>
   </div>
 
   <script>
+    const nameInput = document.getElementById("name");
+    const empidInput = document.getElementById("empid");
+    const emailInput = document.getElementById("email");
+    const nameList = document.getElementById("nameList");
     const form = document.getElementById("attendanceForm");
-    const statusEl = document.getElementById("status");
-    const policyAgree = document.getElementById("policyAgree");
     const submitBtn = document.getElementById("submitBtn");
+    const policyAgree = document.getElementById("policyAgree");
+    const statusEl = document.getElementById("status");
+
+    let employeeMap = {}; // name => { empid, email }
 
     policyAgree.addEventListener("change", () => {
       submitBtn.disabled = !policyAgree.checked;
+    });
+
+    google.script.run.withSuccessHandler(function(data) {
+      data.forEach(([empid, name, email]) => {
+        const option = document.createElement("option");
+        option.value = name;
+        nameList.appendChild(option);
+        employeeMap[name.trim()] = {
+          empid: empid.trim(),
+          email: email.trim()
+        };
+      });
+    }).getEmployeeList();
+
+    nameInput.addEventListener("input", () => {
+      const val = nameInput.value.trim();
+      if (employeeMap[val]) {
+        empidInput.value = employeeMap[val].empid;
+        emailInput.value = employeeMap[val].email;
+      } else {
+        empidInput.value = "";
+        emailInput.value = "";
+      }
     });
 
     form.addEventListener("submit", function (e) {
@@ -180,6 +222,7 @@
         return;
       }
 
+      submitBtn.disabled = true;
       statusEl.textContent = "📍 Getting your location...";
 
       if (!navigator.geolocation) {
@@ -188,16 +231,8 @@
       }
 
       const locationTimeout = setTimeout(() => {
-        statusEl.innerHTML = `
-          ❌ Location request timed out.<br><br>
-          Please:
-          <ul style="text-align: left;">
-            <li>Enable location in your browser</li>
-            <li>Allow the permission popup</li>
-            <li>Use Chrome or Safari if scanning via QR</li>
-            <li>Refresh and try again</li>
-          </ul>
-        `;
+        statusEl.innerHTML = `❌ Location request timed out.<br><br>Please enable location and try again.`;
+        submitBtn.disabled = false;
       }, 10000);
 
       navigator.geolocation.getCurrentPosition(
@@ -212,9 +247,9 @@
           const time = now.toLocaleTimeString("en-IN");
 
           const payload = {
-            empid: document.getElementById("empid").value.trim(),
-            name: document.getElementById("name").value.trim(),
-            email: document.getElementById("email").value.trim(),
+            empid: empidInput.value.trim(),
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
             action: document.querySelector('input[name="action"]:checked')?.value || '',
             lat: lat,
             lng: lng,
@@ -223,15 +258,21 @@
             time: time
           };
 
+          statusEl.textContent = "🔄 Submitting, please wait...";
           google.script.run
             .withSuccessHandler(() => {
               statusEl.textContent = "✅ Attendance recorded!";
               form.reset();
               submitBtn.disabled = true;
+              setTimeout(() => {
+                if (policyAgree.checked) submitBtn.disabled = false;
+                statusEl.textContent = "";
+              }, 5000);
             })
             .withFailureHandler((err) => {
               console.error(err);
               statusEl.textContent = "❌ Failed to submit.";
+              submitBtn.disabled = false;
             })
             .logAttendance(payload);
         },
@@ -248,6 +289,7 @@
               <li>Refresh and try again</li>
             </ul>
           `;
+          submitBtn.disabled = false;
         },
         { timeout: 10000 }
       );
