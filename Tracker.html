@@ -1,298 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <base target="_top" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Team Attendance Tracker</title>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MeedenLabs - Team Attendance Tracker</title>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
-      max-width: 600px;
+      background: #f2f6fc;
+      margin: 0;
+    }
+    .container {
+      max-width: 620px;
       margin: 40px auto;
       padding: 30px;
-      background-color: #f9f9f9;
+      background: #fff;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      color: #333;
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.1);
     }
-
-    h2 {
+    .logo-box {
       text-align: center;
       margin-bottom: 20px;
     }
-
-    img.logo {
-      display: block;
-      margin: 0 auto 20px auto;
-      max-height: 60px;
+    .logo-box img {
+      max-width: 150px;
     }
-
-    label {
+    h2 {
+      color: #1565c0;
+      margin: 10px 0;
       font-weight: bold;
+      text-align: center;
+    }
+    label {
+      font-weight: 600;
       display: block;
       margin-top: 16px;
+      color: #333;
     }
-
-    input, button {
+    input[type="text"],
+    input[type="email"],
+    button {
       width: 100%;
       padding: 10px;
-      margin-top: 4px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      box-sizing: border-box;
+      font-size: 15px;
+      margin-top: 4px;
     }
-
-    input[type="radio"] {
-      width: auto;
-    }
-
-    input[type="checkbox"] {
-      width: auto;
-      margin-right: 8px;
-    }
-
     .radio-group {
       display: flex;
-      justify-content: center;
-      gap: 50px;
-      margin-top: 10px;
+      justify-content: space-around;
+      margin-top: 12px;
+      padding: 10px 0;
     }
-
     .radio-group label {
       display: flex;
       align-items: center;
       gap: 8px;
       font-weight: normal;
     }
-
     .checkbox-label {
-      font-weight: normal;
-      margin-top: 20px;
       display: flex;
       align-items: center;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
       margin-top: 20px;
-      transition: background-color 0.3s;
+      font-size: 13px;
+      gap: 10px;
     }
-
-    button:disabled {
-      background-color: #aaa;
-      cursor: not-allowed;
+    button {
+      background: #1565c0;
+      color: #fff;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
     }
-
-    button:hover:not(:disabled) {
-      background-color: #0056b3;
-    }
-
     .status {
-      margin-top: 16px;
+      margin-top: 20px;
       font-weight: bold;
       text-align: center;
+      color: #e53935;
     }
-
     .policy-box {
-      margin-top: 30px;
+      margin-top: 35px;
       padding: 20px;
-      background-color: #fffbe6;
-      border-left: 4px solid #f1c40f;
-      font-size: 0.95em;
+      background: #fffde7;
+      border-left: 4px solid #fbc02d;
       border-radius: 6px;
+      font-size: 0.95em;
     }
-
     .policy-box h3 {
       margin-top: 0;
-      color: #c27c0e;
+      color: #f9a825;
     }
-
-    .policy-box ul {
-      padding-left: 20px;
-    }
-
-    .policy-box li {
-      margin-bottom: 8px;
-      line-height: 1.5;
-    }
-
-    hr {
-      margin-top: 40px;
-      border: 0;
+    footer {
+      margin-top: 30px;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      background: #e3f2fd;
       border-top: 1px solid #ccc;
+      border-radius: 0 0 12px 12px;
     }
   </style>
 </head>
 <body>
-  <img 
-    src="https://drive.google.com/thumbnail?id=1GF0qYyPsvmVDCv9wdDnuDSvIipbspC6Y&sz=w400" 
-    alt="Company Logo" 
-    class="logo" 
-  />
-
-  <h2>Team Attendance Tracker</h2>
-
-  <form id="attendanceForm" onsubmit="return false;">
-    <label for="name">Name:</label>
-    <input list="nameList" id="name" name="name" placeholder="Choose your name" required />
-    <datalist id="nameList"></datalist>
-
-    <label for="empid">Employee ID:</label>
-    <input type="text" id="empid" name="empid" required readonly />
-
-    <label for="email">Email ID:</label>
-    <input type="email" id="email" name="email" required readonly />
-
-    <label style="margin-top: 20px;">Action:</label>
-    <div class="radio-group">
-      <label><input type="radio" name="action" value="Log-In" required />Log-In</label>
-      <label><input type="radio" name="action" value="Log-Out" required />Log-Out</label>
+  <div class="container">
+    <div class="logo-box">
+      <img src="https://drive.google.com/thumbnail?id=1GF0qYyPsvmVDCv9wdDnuDSvIipbspC6Y&sz=w400" alt="MeedenLabs Logo">
+      <h2>Team Attendance Tracker</h2>
     </div>
 
-    <label class="checkbox-label">
-      <input type="checkbox" id="policyAgree" required />
-      I have read and agree to the Privacy & User Login Policy
-    </label>
+    <form id="attendanceForm">
+      <label>Name:</label>
+      <input type="text" id="name" readonly value="<?= userName ?>">
 
-    <button type="submit" id="submitBtn" disabled>Submit Attendance</button>
-    <div class="status" id="status"></div>
-  </form>
+      <label>Employee ID:</label>
+      <input type="text" id="empid" readonly value="<?= userEmpId ?>">
 
-  <hr />
+      <label>Email:</label>
+      <input type="email" id="email" readonly value="<?= userEmail ?>">
 
-  <div class="policy-box">
-    <h3>Privacy & User Login Policy</h3>
-    <ul>
-      <li>All users must access systems using their own authorized credentials.</li>
-      <li>Sharing or using another individual's login is strictly prohibited.</li>
-      <li>Such activity may lead to disciplinary or legal action.</li>
-      <li>Report any suspicious behavior immediately.</li>
-      <li>This policy ensures data security and organizational integrity.</li>
-    </ul>
+      <label>Action:</label>
+      <div class="radio-group">
+        <label><input type="radio" name="action" value="Log-In"> Log-In</label>
+        <label><input type="radio" name="action" value="Log-Out"> Log-Out</label>
+      </div>
+
+      <div class="checkbox-label">
+        <input type="checkbox" id="policyAgree">
+        <label for="policyAgree">I agree to the Privacy & User Login Policy</label>
+      </div>
+
+      <button type="submit" id="submitBtn" disabled>Submit Attendance</button>
+      <div class="status" id="status"></div>
+    </form>
+
+    <div class="policy-box">
+      <h3>Privacy & User Login Policy</h3>
+      <ul>
+        <li>Only users listed in the EmployeeList sheet are allowed to access this system.</li>
+        <li>Accurate geolocation access is required for attendance to be recorded successfully.</li>
+        <li>Duplicate Log-In or Log-Out actions on the same day will be restricted.</li>
+        <li>All data, including timestamps and locations, will be stored for audit purposes.</li>
+        <li>By using this system, you consent to the collection and use of your location and identity information for attendance tracking only.</li>
+      </ul>
+    </div>
+
+    <footer>
+      &copy; <script>document.write(new Date().getFullYear())</script> MeedenLabs
+    </footer>
   </div>
 
   <script>
-    const nameInput = document.getElementById("name");
-    const empidInput = document.getElementById("empid");
-    const emailInput = document.getElementById("email");
-    const nameList = document.getElementById("nameList");
-    const form = document.getElementById("attendanceForm");
-    const submitBtn = document.getElementById("submitBtn");
-    const policyAgree = document.getElementById("policyAgree");
-    const statusEl = document.getElementById("status");
+    const form = document.getElementById('attendanceForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const policyAgree = document.getElementById('policyAgree');
+    const statusEl = document.getElementById('status');
+    const loginRadio = document.querySelector('input[value="Log-In"]');
+    const logoutRadio = document.querySelector('input[value="Log-Out"]');
+    const userEmail = document.getElementById('email').value;
 
-    let employeeMap = {}; // name => { empid, email }
-
-    policyAgree.addEventListener("change", () => {
+    // Enable submit button only if checkbox is checked
+    policyAgree.addEventListener('change', () => {
       submitBtn.disabled = !policyAgree.checked;
+      statusEl.textContent = '';
     });
 
-    google.script.run.withSuccessHandler(function(data) {
-      data.forEach(([empid, name, email]) => {
-        const option = document.createElement("option");
-        option.value = name;
-        nameList.appendChild(option);
-        employeeMap[name.trim()] = {
-          empid: empid.trim(),
-          email: email.trim()
-        };
-      });
-    }).getEmployeeList();
+    // Get today's status to check if Log-In or Log-Out is already done
+    google.script.run.withSuccessHandler(status => {
+      let message = '';
 
-    nameInput.addEventListener("input", () => {
-      const val = nameInput.value.trim();
-      if (employeeMap[val]) {
-        empidInput.value = employeeMap[val].empid;
-        emailInput.value = employeeMap[val].email;
-      } else {
-        empidInput.value = "";
-        emailInput.value = "";
+      if (status.hasLogIn) {
+        loginRadio.disabled = true;
+        loginRadio.parentElement.style.color = 'gray';
+        message += '✅ Log-In already completed today.\n';
       }
-    });
+      if (status.hasLogOut) {
+        logoutRadio.disabled = true;
+        logoutRadio.parentElement.style.color = 'gray';
+        message += '✅ Log-Out already completed today.\n';
+      }
 
-    form.addEventListener("submit", function (e) {
+      if (status.hasLogIn && status.hasLogOut) {
+        // Disable full form once both actions are completed
+        submitBtn.disabled = true;
+        policyAgree.disabled = true;
+        policyAgree.checked = true;
+        statusEl.style.color = 'green';
+        statusEl.textContent = '✅ You have already completed both Log-In and Log-Out for today.';
+      } else if (message) {
+        statusEl.style.color = 'green';
+        statusEl.textContent = message.trim();
+      }
+    }).getTodayStatus(userEmail);
+
+    // Handle Form Submission
+    form.addEventListener('submit', e => {
       e.preventDefault();
-
-      if (!policyAgree.checked) {
-        alert("You must agree to the policy before submitting.");
-        return;
-      }
-
       submitBtn.disabled = true;
-      statusEl.textContent = "📍 Getting your location...";
+      statusEl.style.color = '#333';
+      statusEl.textContent = '📍 Obtaining location...';
 
       if (!navigator.geolocation) {
-        alert("Geolocation is not supported by your browser.");
+        statusEl.textContent = '❌ Geolocation not supported.';
+        submitBtn.disabled = false;
         return;
       }
 
-      const locationTimeout = setTimeout(() => {
-        statusEl.innerHTML = `❌ Location request timed out.<br><br>Please enable location and try again.`;
+      navigator.geolocation.getCurrentPosition(pos => {
+        const now = new Date();
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const payload = {
+          empid: document.getElementById('empid').value,
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          action: document.querySelector('input[name="action"]:checked').value,
+          lat,
+          lng,
+          location: `Lat:${lat},Lng:${lng}`,
+          date: now.toLocaleDateString('en-CA'),
+          time: now.toLocaleTimeString('en-GB')
+        };
+
+        statusEl.textContent = '🔄 Submitting...';
+        google.script.run
+          .withSuccessHandler(msg => {
+            statusEl.style.color = 'green';
+            statusEl.textContent = msg;
+            form.reset();
+            submitBtn.disabled = true;
+          })
+          .withFailureHandler(err => {
+            statusEl.style.color = 'red';
+            statusEl.textContent = '❌ ' + err.message;
+            submitBtn.disabled = false;
+          })
+          .logAttendance(payload);
+      }, err => {
+        statusEl.textContent = '❌ Location access denied.';
         submitBtn.disabled = false;
-      }, 10000);
-
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          clearTimeout(locationTimeout);
-
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-
-          const now = new Date();
-          const date = now.toLocaleDateString("en-IN");
-          const time = now.toLocaleTimeString("en-IN");
-
-          const payload = {
-            empid: empidInput.value.trim(),
-            name: nameInput.value.trim(),
-            email: emailInput.value.trim(),
-            action: document.querySelector('input[name="action"]:checked')?.value || '',
-            lat: lat,
-            lng: lng,
-            location: `Lat: ${lat}, Lng: ${lng}`,
-            date: date,
-            time: time
-          };
-
-          statusEl.textContent = "🔄 Submitting, please wait...";
-          google.script.run
-            .withSuccessHandler(() => {
-              statusEl.textContent = "✅ Attendance recorded!";
-              form.reset();
-              submitBtn.disabled = true;
-              setTimeout(() => {
-                if (policyAgree.checked) submitBtn.disabled = false;
-                statusEl.textContent = "";
-              }, 5000);
-            })
-            .withFailureHandler((err) => {
-              console.error(err);
-              statusEl.textContent = "❌ Failed to submit.";
-              submitBtn.disabled = false;
-            })
-            .logAttendance(payload);
-        },
-        function (error) {
-          clearTimeout(locationTimeout);
-          console.warn("Location error:", error);
-          statusEl.innerHTML = `
-            ❌ Unable to access location.<br><br>
-            Please:
-            <ul style="text-align: left; margin-top: 8px;">
-              <li>Enable location access in your device</li>
-              <li>Allow the popup when asked</li>
-              <li>Open in Chrome/Safari if using mobile</li>
-              <li>Refresh and try again</li>
-            </ul>
-          `;
-          submitBtn.disabled = false;
-        },
-        { timeout: 10000 }
-      );
+      }, { timeout: 10000 });
     });
   </script>
 </body>
